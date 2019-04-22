@@ -77,3 +77,16 @@
     name: prometheus-node-exporter
     state: started
     enabled: yes
+
+- name: Check if firewalld is running
+  command: systemctl status firewalld
+  ignore_errors: yes
+  changed_when: false
+  register: service_firewalld_status
+
+- name: Open port prometheus node exporter
+  firewalld:
+    port: "{{ prometheus_open_port_exporter }}/tcp"
+    permanent: true
+    state: enabled
+  when: service_firewalld_status.stdout.find("running") != -1

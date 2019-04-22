@@ -10,3 +10,10 @@
   service:
     name: prometheus-node-exporter
     state: restarted
+
+- name: Restart firewalld
+  service:
+    name: firewalld
+    enabled: no
+    state: restarted
+  when: service_firewalld_status.stdout.find("running") != -1
